@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Enter the ethereum account here</p>
+    <input type="text" id="accountId" name="accountname">
+    <button id="buttonId" onclick="balance()">search</button>
+    <p id="balance">balance is...</p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+
+    <script>
+        var provider = 'https://mainnet.infura.io/v3/5c1e3ebb8cd14e518b8b01643c248da0';
+        var web3 = new Web3(provider);
+
+        web3.eth.getBlockNumber().then(console.log);
+        //web3 is also working
+    </script>
+    <script>
+        //saving input value
+
+        //writing function balance
+        function balance(){
+            var accountname = document.getElementById('accountId').value;
+            if (web3.utils.isAddress(accountname) == true){
+                web3.eth.getBalance(accountname).then((result) =>{
+                    console.log(result);
+                    document.getElementById('balance').innerText = ('balance is ' + result);
+                });
+            }
+            else {
+                document.getElementById('balance').innerText = "account is invalid";
+            };
+        }
+
+
+        document.getElementById('balance').innerText= accountname;
+    </script>
+</body>
+</html>
