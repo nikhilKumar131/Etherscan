@@ -11,5 +11,5 @@ app.get("/", function(req,res){
 
 
 
-app.listen(443);
+app.listen(process.env.PORT);
 // console.log('listening to port 3000');
