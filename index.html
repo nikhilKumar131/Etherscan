@@ -1,45 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>First Dapp</title>
 </head>
+
 <body>
-    <p>Enter the ethereum account here</p>
-    <input type="text" id="accountId" name="accountname">
-    <button id="buttonId" onclick="balance()">search</button>
-    <p id="balance">balance is...</p>
-
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-
-    <script>
-        var provider = 'https://mainnet.infura.io/v3/5c1e3ebb8cd14e518b8b01643c248da0';
-        var web3 = new Web3(provider);
-
-        web3.eth.getBlockNumber().then(console.log);
-        //web3 is also working
-    </script>
-    <script>
-        //saving input value
-
-        //writing function balance
-        function balance(){
-            var accountname = document.getElementById('accountId').value;
-            if (web3.utils.isAddress(accountname) == true){
-                web3.eth.getBalance(accountname).then((result) =>{
-                    console.log(result);
-                    document.getElementById('balance').innerText = ('balance is ' + result);
-                });
-            }
-            else {
-                document.getElementById('balance').innerText = "account is invalid";
-            };
-        }
-
-
-        document.getElementById('balance').innerText= accountname;
-    </script>
+    <div>
+        <label>Mood:</label>
+        <p></p>
+        <input id="mood" />
+        <br />
+        <button id="setmood" onclick="setMood()">Set</button>
+        <button id="getmood" onclick="getMood()">Get</button>
+    </div>
 </body>
+
+
+<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+
+<script>
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "goerli");
+    const MoodContractAddress = "0x8cB78E9d0a46223BA93a3bC4eD5867eAC0cf22F5";
+    const MoodContractABI =[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_mood",
+				"type": "string"
+			}
+		],
+		"name": "setMood",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMood",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+provider.send("eth_requestAccounts", []).then(() => {
+  provider.listAccounts().then((accounts) => {
+    signer = provider.getSigner(accounts[0]);
+    MoodContract = new ethers.Contract(
+      MoodContractAddress,
+      MoodContractABI,
+      signer
+    );
+  });
+});
+
+
+async function getMood(){
+    const get = await MoodContract.getMood();
+    console.log(get);
+}
+
+async function setMood(){
+    const mood = document.getElementById("mood").value;
+    await MoodContract.setMood(mood);
+}
+
+</script>
+
 </html>
